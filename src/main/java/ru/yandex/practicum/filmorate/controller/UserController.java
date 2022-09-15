@@ -18,18 +18,13 @@ public class UserController {
     Map<Integer,User> usersById = new HashMap<>();
     private int curId = 1;
 
-    private void setCurId(){
-        this.curId++;
-    }
-
-
     @GetMapping
     public Collection<User> getAllUsers(){
         return usersById.values();
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user)throws ValidationException{
+    public User create(@Valid @RequestBody User user){
         log.info("Получен POST - запрос к /users, переданное значение User = {}",user);
         if(user.getLogin().contains(" ")){
             throw new ValidationException("логин не может быть пустым и содержать пробелы");
@@ -40,12 +35,12 @@ public class UserController {
         user.setId(curId);
         usersById.put(curId,user);
         log.info("Пользователю: {}, Присвоен id {}",user.getName(),user.getId());
-        setCurId();
+        curId++;
         return user;
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user)throws ValidationException{
+    public User update(@Valid @RequestBody User user){
         log.info("Получен PUT - запрос к /users, переданное значение User = {}",user);
             if (usersById.containsKey(user.getId())){
                 usersById.put(user.getId(), user);

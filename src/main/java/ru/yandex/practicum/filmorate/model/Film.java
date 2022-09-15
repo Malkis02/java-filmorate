@@ -15,6 +15,7 @@ public class Film {
     private String name;
     @Size(max = 200,message = "максимальная длина описания — 200 символов")
     private String description;
+    @IsBefore(message = "дата релиза — не раньше 12.28.1895")
     private LocalDate releaseDate;
     @Positive(message = "продолжительность фильма должна быть положительной.")
     private int duration;
