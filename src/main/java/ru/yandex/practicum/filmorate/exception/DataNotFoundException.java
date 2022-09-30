@@ -1,2 +1,9 @@
-package ru.yandex.practicum.filmorate.exception;public class DataNotFoundException {
+package ru.yandex.practicum.filmorate.exception;
+
+
+public class DataNotFoundException extends RuntimeException {
+
+    public DataNotFoundException(String s){
+        super(s);
+    }
 }
