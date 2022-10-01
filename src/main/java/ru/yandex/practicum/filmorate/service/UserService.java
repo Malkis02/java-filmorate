@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.IdValidationException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -51,5 +52,25 @@ public class UserService {
                 .filter(t -> userStorage.findUserById(otherId).getFriends().contains(t))
                 .map(t -> userStorage.getUsersById().get(t))
                 .collect(Collectors.toList());
+    }
+
+    public User create(User user) {
+        return userStorage.create(user);
+    }
+
+    public void delete(User user) {
+        userStorage.delete(user);
+    }
+
+    public User update(User user) {
+       return userStorage.update(user);
+    }
+
+    public Collection<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    public User findUserById(Integer id){
+        return userStorage.findUserById(id);
     }
 }

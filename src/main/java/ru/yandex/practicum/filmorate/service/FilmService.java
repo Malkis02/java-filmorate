@@ -41,4 +41,24 @@ private final UserStorage userStorage;
                     .limit(count)
                     .collect(Collectors.toList());
     }
+
+    public Film create(Film film){
+       return filmStorage.create(film);
+    }
+
+    public void delete(Film film){
+        filmStorage.delete(film);
+    }
+
+    public Film update(Film film){
+        return filmStorage.update(film);
+    }
+
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+    public Film findFilmById(Integer id){
+        return filmStorage.findFilmById(id);
+    }
 }
