@@ -4,14 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
 
@@ -53,7 +50,6 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(100)
                 .build();
-        filmController.create(film);
         mockMvc.perform(
                         post("/films").content(objectMapper.writeValueAsString(film)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError());
@@ -68,7 +64,6 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(100)
                 .build();
-        filmController.create(film);
         mockMvc.perform(
                         post("/films").content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -95,7 +90,6 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(-100)
                 .build();
-        filmController.create(film);
         mockMvc.perform(
                         post("/films").content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON))
