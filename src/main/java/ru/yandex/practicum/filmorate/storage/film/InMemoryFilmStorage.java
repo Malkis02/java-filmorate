@@ -1,19 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.Getter;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.IdValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
-@Component
-@Getter
+@Repository
 public class InMemoryFilmStorage implements FilmStorage{
 
     private final Map<Integer,Film> filmsById = new HashMap<>();
@@ -31,14 +27,14 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public void delete(Film film) {
-        log.info("Получен DELETE - запрос к /films, переданное значение Film = {}",film);
-        if(!filmsById.containsKey(film.getId())){
-            log.warn("Фильм с id = {} отсутствует в базе",film.getId());
-            throw new IdValidationException("Фильм с id: " + film.getId() + " отсутствует в базе");
+    public void delete(int id) {
+        log.info("Получен DELETE - запрос к /films, переданное значение Film = {}",filmsById.get(id));
+        if(!filmsById.containsKey(id)){
+            log.warn("Фильм с id = {} отсутствует в базе",id);
+            throw new IdValidationException("Фильм с id: " + id + " отсутствует в базе");
         }
-        filmsById.remove(film.getId());
-        log.info("Фильм: {}, Удален",film.getName());
+        filmsById.remove(id);
+        log.info("Фильм: {}, Удален",filmsById.get(id).getName());
     }
 
     @Override
@@ -54,8 +50,8 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Collection<Film> getAllFilms() {
-        return filmsById.values();
+    public List<Film> getAllFilms() {
+        return new ArrayList<>(filmsById.values());
     }
 
     @Override

@@ -20,7 +20,8 @@ public class User {
     @NotBlank(message = "логин не может быть пустым и содержать пробелы")
     private String login;
     private String name;
-    @Past(message = "дата рождения не может быть в будущем.")
+    @PastOrPresent(message = "дата рождения не может быть в будущем.")
+    @NotNull
     private LocalDate birthday;
     @JsonIgnore
     private final Set<Integer> friends = new HashSet<>();

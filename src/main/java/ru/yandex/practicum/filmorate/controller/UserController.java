@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -12,11 +13,17 @@ import java.util.*;
 @Slf4j
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+
+    private void validate(User user){
+        if(user.getLogin().contains(" ")){
+            throw new ValidationException("логин не может быть пустым и содержать пробелы");
+        }
+        if(user.getName()==null || user.getName().isBlank()){
+            user.setName(user.getLogin());
+        }
     }
 
 
@@ -27,19 +34,19 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user){
-        userService.validate(user);
+        validate(user);
         return userService.create(user);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user){
-        userService.validate(user);
+        validate(user);
         return userService.update(user);
     }
 
     @DeleteMapping
-    public void deleteUser(@RequestBody User user){
-        userService.delete(user);
+    public void deleteUser(@RequestBody int id){
+        userService.delete(id);
     }
 
     @PutMapping("{id}/friends/{friendId}")
@@ -52,16 +59,16 @@ public class UserController {
         userService.deleteFriends(id,friendId);
     }
     @GetMapping("{id}")
-    public User getUserById(@Valid @PathVariable Integer id){
+    public User getUserById( @PathVariable Integer id){
         return userService.findUserById(id);
     }
     @GetMapping("{id}/friends")
-    public Collection<User> getUserFriend(@Valid @PathVariable Integer id){
+    public List<User> getUserFriend( @PathVariable Integer id){
         return userService.getAllFriends(id);
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
-    public Collection<User> getUserCommonFriends(@Valid @PathVariable Integer id, @PathVariable Integer otherId){
+    public List<User> getUserCommonFriends( @PathVariable Integer id, @PathVariable Integer otherId){
         return userService.getCommonFriends(id,otherId);
     }
 }
