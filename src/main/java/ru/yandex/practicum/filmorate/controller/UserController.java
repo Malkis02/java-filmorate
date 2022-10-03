@@ -17,58 +17,59 @@ import java.util.*;
 public class UserController {
     private final UserService userService;
 
-    private void validate(User user){
-        if(user.getLogin().contains(" ")){
-            throw new ValidationException("логин не может быть пустым и содержать пробелы");
-        }
-        if(user.getName()==null || user.getName().isBlank()){
-            user.setName(user.getLogin());
-        }
-    }
-
-
     @GetMapping
-    public Collection<User> getAllUsers(){
+    public Collection<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user){
+    public User create(@Valid @RequestBody User user) {
         validate(user);
         return userService.create(user);
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user){
+    public User update(@Valid @RequestBody User user) {
         validate(user);
         return userService.update(user);
     }
 
-    @DeleteMapping
-    public void deleteUser(@RequestBody int id){
+    @DeleteMapping("{id}")
+    public void deleteUser(@PathVariable int id) {
         userService.delete(id);
     }
 
     @PutMapping("{id}/friends/{friendId}")
-    public void addFriends(@PathVariable Integer id,@PathVariable Integer friendId){
-        userService.addFriends(id,friendId);
+    public void addFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.addFriends(id, friendId);
     }
 
     @DeleteMapping("{id}/friends/{friendId}")
-    public void deleteFriends(@PathVariable Integer id,@PathVariable Integer friendId){
-        userService.deleteFriends(id,friendId);
+    public void deleteFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.deleteFriends(id, friendId);
     }
+
     @GetMapping("{id}")
-    public User getUserById( @PathVariable Integer id){
+    public User getUserById(@PathVariable Integer id) {
         return userService.findUserById(id);
     }
+
     @GetMapping("{id}/friends")
-    public List<User> getUserFriend( @PathVariable Integer id){
+    public List<User> getUserFriend(@PathVariable Integer id) {
         return userService.getAllFriends(id);
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
-    public List<User> getUserCommonFriends( @PathVariable Integer id, @PathVariable Integer otherId){
-        return userService.getCommonFriends(id,otherId);
+    public List<User> getUserCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
+    private void validate(User user) {
+        if (user.getLogin().contains(" ")) {
+            throw new ValidationException("логин не может быть пустым и содержать пробелы");
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 }
