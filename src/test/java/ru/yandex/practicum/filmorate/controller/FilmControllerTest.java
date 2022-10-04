@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,7 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
 class FilmControllerTest {
 
     @Autowired
@@ -23,9 +25,9 @@ class FilmControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @SpyBean
     FilmController filmController;
+
 
     @Test
     void filmCreate() throws Exception {
@@ -48,10 +50,9 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(100)
                 .build();
-        filmController.create(film);
         mockMvc.perform(
                         post("/films").content(objectMapper.writeValueAsString(film)).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is5xxServerError());
     }
     @Test
     void filmCreateWithWrongDescription()throws Exception{
@@ -63,11 +64,10 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(100)
                 .build();
-        filmController.create(film);
         mockMvc.perform(
                         post("/films").content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(status().isBadRequest());
+                                .andExpect(status().is5xxServerError());
     }
     @Test
     void filmCreateWithWrongReleaseDate()throws Exception{
@@ -80,7 +80,7 @@ class FilmControllerTest {
         mockMvc.perform(
                         post("/films").content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(status().isBadRequest());
+                                .andExpect(status().is5xxServerError());
     }
     @Test
     void filmCreateWithWrongDuration()throws Exception{
@@ -90,11 +90,10 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(-100)
                 .build();
-        filmController.create(film);
         mockMvc.perform(
                         post("/films").content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(status().isBadRequest());
+                                .andExpect(status().is5xxServerError());
     }
     @Test
     void filmUpdate()throws Exception{
