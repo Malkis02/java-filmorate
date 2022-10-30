@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import java.util.*;
 
 @Slf4j
 @Repository
-public class InMemoryFilmStorage implements FilmStorage{
+public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Integer,Film> filmsById = new HashMap<>();
     private int curId = 1;

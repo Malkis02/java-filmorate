@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
+import java.util.Date;
 
 public class IsBeforeValidator implements ConstraintValidator<IsBefore, LocalDate> {
 

@@ -1,14 +1,17 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.MPA;
 
 import java.time.LocalDate;
 
@@ -18,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmControllerTest {
 
     @Autowired
@@ -36,6 +41,7 @@ class FilmControllerTest {
                 .description("Test description")
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(100)
+                .mpa(new MPA(1,"G"))
                 .build();
                 filmController.create(film);
         mockMvc.perform(
@@ -103,6 +109,7 @@ class FilmControllerTest {
                 .description("Test description")
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(100)
+                .mpa(new MPA(1,"G"))
                 .build();
         filmController.create(film);
 
@@ -112,13 +119,14 @@ class FilmControllerTest {
                 .description("updated Test description")
                 .releaseDate(LocalDate.of(2008,8,15))
                 .duration(200)
+                .rate(0)
+                .mpa(new MPA(2,"PG"))
                 .build();
-
         String body = objectMapper.writeValueAsString(updatedFilm);
         mockMvc.perform(
                         put("/films").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertTrue(filmController.getAllFilms().contains(updatedFilm)));
+                .andExpect(result -> assertEquals(filmController.findFilmById(updatedFilm.getId()),updatedFilm));
     }
     @Test
     void filmUpdateWithWrongId()throws Exception{
@@ -128,6 +136,7 @@ class FilmControllerTest {
                 .description("Test description")
                 .releaseDate(LocalDate.of(1999,8,15))
                 .duration(100)
+                .mpa(new MPA(1,"G"))
                 .build();
         filmController.create(film);
 
@@ -137,6 +146,7 @@ class FilmControllerTest {
                 .description("updated Test description")
                 .releaseDate(LocalDate.of(2008,8,15))
                 .duration(200)
+                .mpa(new MPA(2,"PG"))
                 .build();
 
         String body = objectMapper.writeValueAsString(updatedFilm);
