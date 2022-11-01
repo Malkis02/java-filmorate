@@ -77,7 +77,7 @@ class UserControllerTest {
     @Test
     void userCreateWithWrongName() throws Exception {
         User user = User.builder()
-                .id(2)
+                .id(1)
                 .email("practicum777@yandex.ru")
                 .login("login3")
                 .name(" ")
@@ -105,11 +105,13 @@ class UserControllerTest {
     @Test
     void userUpdate()throws Exception{
         User user = User.builder()
+                .id(1)
                 .email("prac@yandex.ru")
                 .login("login5")
                 .name("name")
                 .birthday(LocalDate.of(2003,8,20))
                 .build();
+        userDbStorage.create(user);
 
         User updatedUser = User.builder()
                 .id(user.getId())
