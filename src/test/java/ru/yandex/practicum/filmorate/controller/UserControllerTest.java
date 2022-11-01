@@ -56,7 +56,6 @@ class UserControllerTest {
                 .name("Name")
                 .birthday(LocalDate.of(2000,8,20))
                 .build();
-        userDbStorage.create(user);
         String body = objectMapper.writeValueAsString(user);
         mockMvc.perform(
                         post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
@@ -84,7 +83,6 @@ class UserControllerTest {
                 .name(" ")
                 .birthday(LocalDate.of(2000,8,20))
                 .build();
-       // userDbStorage.create(user);
         String body = objectMapper.writeValueAsString(user);
         mockMvc.perform(
                         post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
@@ -99,7 +97,6 @@ class UserControllerTest {
                 .name("name")
                 .birthday(LocalDate.of(2023,8,20))
                 .build();
-        userDbStorage.create(user);
         String body = objectMapper.writeValueAsString(user);
         mockMvc.perform(
                         post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
@@ -113,7 +110,6 @@ class UserControllerTest {
                 .name("name")
                 .birthday(LocalDate.of(2003,8,20))
                 .build();
-        userDbStorage.create(user);
 
         User updatedUser = User.builder()
                 .id(user.getId())
@@ -136,7 +132,6 @@ class UserControllerTest {
                 .name("name")
                 .birthday(LocalDate.of(2023,8,20))
                 .build();
-        userDbStorage.create(user);
 
         User updatedUser = User.builder()
                 .id(999)

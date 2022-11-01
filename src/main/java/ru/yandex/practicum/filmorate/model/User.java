@@ -11,8 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
 @AllArgsConstructor
+@Builder
 public class User {
     private Integer id;
     @NotBlank(message = "электронная почта не может быть пустой и должна содержать символ @")

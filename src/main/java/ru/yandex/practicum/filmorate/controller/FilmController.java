@@ -6,42 +6,47 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.db.GenreDbStorage;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 public class FilmController {
 
     private final FilmService filmService;
 
     @GetMapping
     public List<Film> getAllFilms() {
+        log.info("Получен GET - запрос к /films");
         return filmService.getAllFilms();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
+        log.info("Получен POST - запрос к /films, переданное значение Film = {}", film);
         return filmService.create(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody final Film film) {
+        log.info("Получен PUT - запрос к /films, переданное значение Id = {}", film.getId());
         return filmService.update(film);
     }
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable int id) {
+        log.info("Получен DELETE - запрос к /films, переданное значение Film id = {}", id);
         filmService.delete(id);
     }
 
     @GetMapping("{id}")
     public Film findFilmById(@PathVariable Integer id) {
+        log.info("Получен GET - запрос к /films, переданное значение Id = {}", id);
         return filmService.findFilmById(id);
     }
 

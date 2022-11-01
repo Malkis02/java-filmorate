@@ -11,13 +11,15 @@ import ru.yandex.practicum.filmorate.exception.IdValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPA;
-import ru.yandex.practicum.filmorate.storage.inmemory.FilmStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Repository
 @Slf4j
@@ -32,7 +34,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        log.info("Получен POST - запрос к /films, переданное значение Film = {}", film);
         String sqlQuery = "insert into films (name, description, release_date, duration, rate, mpa_id) " +
                 "values (?, ?, ?, ?, ?, ?)";
 
@@ -68,6 +69,7 @@ public class FilmDbStorage implements FilmStorage {
                         ps.setLong(1, filmId);
                         ps.setLong(2, genreList.get(i).getId());
                     }
+
                     public int getBatchSize() {
                         return genreList.size();
                     }
@@ -76,7 +78,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void delete(int id) {
-        log.info("Получен DELETE - запрос к /films, переданное значение Film id = {}", id);
         String sqlQuery = "delete from films where id =?";
         jdbcTemplate.update(sqlQuery, id);
         validate(id);
@@ -85,12 +86,12 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        log.info("Получен PUT - запрос к /films, переданное значение Id = {}", film.getId());
         String sqlQuery = " update films set name = ?, description = ?, release_date = ? " +
                 " ,duration = ?,mpa_id = ? where id = ?";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getMpa().getId(), film.getId());
         saveGenres(film);
+        log.info("Фильм с id: {},Обновлен", film.getId());
         return findFilmById(film.getId());
     }
 
@@ -102,7 +103,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film findFilmById(Integer id) {
-        log.info("Получен GET - запрос к /films, переданное значение Id = {}", id);
         final String sqlQuery = "select * from films f, mpa m  where f.mpa_id = m.id and f.id = ?";
         final List<Film> films = jdbcTemplate.query(sqlQuery, FilmDbStorage::makeFilm, id);
         if (films.size() != 1) {

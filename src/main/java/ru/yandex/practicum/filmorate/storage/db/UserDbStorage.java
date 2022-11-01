@@ -6,10 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.IdValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.inmemory.UserStorage;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -29,7 +27,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        log.info("Получен POST - запрос к /users, переданное значение User = {}",user);
         String sqlQuery = "INSERT INTO USERS(email, login, name, birthday)"
                 + "values (?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -53,14 +50,12 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void delete(int id) {
-        log.info("Получен DELETE - запрос к /users, переданное значение User id = {}",id);
         String sqlQuery = "delete from users where id = ?";
         jdbcTemplate.update(sqlQuery,id);
     }
 
     @Override
     public User update(User user) {
-        log.info("Получен PUT - запрос к /users, переданное значение User = {}",user);
         final String sqlQuery = "update users set email = ?, login = ?, name = ?, birthday = ? where id = ?";
         jdbcTemplate.update(sqlQuery,user.getEmail(),user.getLogin(),user.getName(),user.getBirthday(),user.getId());
         final String sqlQuery1 = "select * from users where id = ?";
@@ -80,7 +75,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User findUserById(Integer id) {
-        log.info("Получен GET - запрос к /users, переданное значение Id = {}",id);
         final String sqlQuery = "select * from users where id = ?";
         final List<User> users = jdbcTemplate.query(sqlQuery,UserDbStorage::makeUser,id);
         if(users.size() != 1){
