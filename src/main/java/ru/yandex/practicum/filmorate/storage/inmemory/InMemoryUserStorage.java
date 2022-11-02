@@ -1,9 +1,10 @@
-package ru.yandex.practicum.filmorate.storage.user;
+package ru.yandex.practicum.filmorate.storage.inmemory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.IdValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.db.UserStorage;
 
 import java.util.*;
 
@@ -16,7 +17,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        log.info("Получен POST - запрос к /users, переданное значение User = {}",user);
         user.setId(curId);
         usersById.put(curId,user);
         log.info("Пользователю: {}, Присвоен id {}",user.getName(),user.getId());
@@ -26,7 +26,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void delete(int id) {
-        log.info("Получен DELETE - запрос к /users, переданное значение User = {}",usersById.get(id));
         if(!usersById.containsKey(id)){
             log.warn("Пользователь с id = {} отсутствует в базе",id);
             throw new IdValidationException("Пользователь с id: " + id + " отсутствует в базе");
@@ -37,7 +36,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        log.info("Получен PUT - запрос к /users, переданное значение User = {}",user);
         if (usersById.containsKey(user.getId())){
             usersById.put(user.getId(), user);
             return user;
@@ -53,7 +51,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
     @Override
     public User findUserById(Integer id){
-        log.info("Получен GET - запрос к /users, переданное значение Id = {}",id);
         if (usersById.containsKey(id)){
             return usersById.get(id);
         }else {

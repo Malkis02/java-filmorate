@@ -8,7 +8,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,23 +20,27 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getAllUsers() {
+        log.info("Получен GET - запрос к /users");
         return userService.getAllUsers();
     }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
+        log.info("Получен POST - запрос к /users, переданное значение User = {}", user);
         validate(user);
         return userService.create(user);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
+        log.info("Получен PUT - запрос к /users, переданное значение User = {}", user);
         validate(user);
         return userService.update(user);
     }
 
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable int id) {
+        log.info("Получен DELETE - запрос к /users, переданное значение User id = {}", id);
         userService.delete(id);
     }
 
@@ -51,6 +56,7 @@ public class UserController {
 
     @GetMapping("{id}")
     public User getUserById(@PathVariable Integer id) {
+        log.info("Получен GET - запрос к /users, переданное значение Id = {}", id);
         return userService.findUserById(id);
     }
 

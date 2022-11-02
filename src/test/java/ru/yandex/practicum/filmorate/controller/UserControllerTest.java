@@ -1,15 +1,17 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 
 import java.time.LocalDate;
 
@@ -20,6 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -28,18 +32,16 @@ class UserControllerTest {
 
 
     @SpyBean
-    UserController userController;
+    private final UserDbStorage userDbStorage;
 
     @Test
     void userCreate() throws Exception {
         User user = User.builder()
-                .id(1)
-                .email("practicum@yandex.ru")
-                .login("login")
+                .email("practic1337@yandex.ru")
+                .login("login1")
                 .name("Name")
                 .birthday(LocalDate.of(2000,8,20))
                 .build();
-        userController.create(user);
         String body = objectMapper.writeValueAsString(user);
         mockMvc.perform(
                 post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
@@ -49,13 +51,11 @@ class UserControllerTest {
     @Test
     void userCreateWithWrongEmail() throws Exception {
         User user = User.builder()
-                .id(1)
-                .email("practicumyandex.ru")
-                .login("login")
+                .email("practiyandex.ru")
+                .login("login2")
                 .name("Name")
                 .birthday(LocalDate.of(2000,8,20))
                 .build();
-        userController.create(user);
         String body = objectMapper.writeValueAsString(user);
         mockMvc.perform(
                         post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
@@ -64,8 +64,7 @@ class UserControllerTest {
     @Test
     void userCreateWithWrongLogin() throws Exception{
         User user = User.builder()
-                .id(1)
-                .email("practicum@yandex.ru")
+                .email("pract@yandex.ru")
                 .login("login login")
                 .name("Name")
                 .birthday(LocalDate.of(2000,8,20))
@@ -79,28 +78,25 @@ class UserControllerTest {
     void userCreateWithWrongName() throws Exception {
         User user = User.builder()
                 .id(1)
-                .email("practicum@yandex.ru")
-                .login("login")
+                .email("practicum777@yandex.ru")
+                .login("login3")
                 .name(" ")
                 .birthday(LocalDate.of(2000,8,20))
                 .build();
-        userController.create(user);
         String body = objectMapper.writeValueAsString(user);
         mockMvc.perform(
                         post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(user.getName(),user.getLogin()));
+                .andExpect(result -> assertEquals(userDbStorage.findUserById(user.getId()).getName(),user.getLogin()));
     }
     @Test
     void userCreateWithWrongBirthday() throws Exception{
         User user = User.builder()
-                .id(1)
                 .email("practicum@yandex.ru")
-                .login("login")
+                .login("login4")
                 .name("name")
                 .birthday(LocalDate.of(2023,8,20))
                 .build();
-        userController.create(user);
         String body = objectMapper.writeValueAsString(user);
         mockMvc.perform(
                         post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
@@ -110,15 +106,15 @@ class UserControllerTest {
     void userUpdate()throws Exception{
         User user = User.builder()
                 .id(1)
-                .email("practicum@yandex.ru")
-                .login("login")
+                .email("prac@yandex.ru")
+                .login("login5")
                 .name("name")
                 .birthday(LocalDate.of(2003,8,20))
                 .build();
-        userController.create(user);
+        userDbStorage.create(user);
 
         User updatedUser = User.builder()
-                .id(1)
+                .id(user.getId())
                 .email("updateemail@yandex.ru")
                 .login("updatelogin")
                 .name("updatename")
@@ -128,18 +124,16 @@ class UserControllerTest {
         mockMvc.perform(
                         put("/users").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertTrue(userController.getAllUsers().contains(updatedUser)));
+                .andExpect(result -> assertTrue(userDbStorage.getAllUsers().contains(updatedUser)));
     }
     @Test
     void updateUserWithWrongId()throws Exception{
         User user = User.builder()
-                .id(1)
-                .email("practicum@yandex.ru")
-                .login("login")
+                .email("practicum02@yandex.ru")
+                .login("login6")
                 .name("name")
                 .birthday(LocalDate.of(2023,8,20))
                 .build();
-        userController.create(user);
 
         User updatedUser = User.builder()
                 .id(999)

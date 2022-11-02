@@ -17,40 +17,40 @@ import javax.validation.ConstraintViolationException;
 public class ErrorHandler {
 
     @ExceptionHandler
-    public ResponseEntity< String > handleValidationException(final ValidationException e){
-        log.info("400 {}",e.getMessage());
+    public ResponseEntity<String> handleValidationException(final ValidationException e) {
+        log.info("400 {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleIdValidationException(final IdValidationException e){
-        log.info("404 {}",e.getMessage());
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> handleIdValidationException(final IdValidationException e) {
+        log.info("404 {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleDataNotFoundException(final DataNotFoundException e){
-        log.info("404 {}",e.getMessage());
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
-
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<String> handleThrowable(final Throwable e){
-        log.warn("500 {}",e.getMessage());
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> handleDataNotFoundException(final DataNotFoundException e) {
+        log.info("404 {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e){
-        log.info("400 {}",e.getMessage());
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> handleThrowable(final Throwable e) {
+        log.warn("500 {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
     }
 
     @ExceptionHandler
-    public ResponseEntity< String > handleConstraintViolationException(ConstraintViolationException e){
-        log.info("400 {}",e.getMessage());
+    public ResponseEntity<String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        log.info("400 {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+        log.info("400 {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
